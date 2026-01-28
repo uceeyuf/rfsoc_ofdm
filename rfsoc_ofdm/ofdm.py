@@ -29,7 +29,7 @@ class OFDMTxCore(DefaultIP):
                                             value='BPSK',
                                             description='Modulation Scheme: ')
         
-    bindto = ["xilinx.com:ip:ofdm_tx:0.4"]
+    bindto = ["strathsdr.org:PYNQ-SDR:ofdm_tx:0.5"]
     
     @property
     def reset(self):
@@ -77,7 +77,7 @@ class OFDMRxCore(DefaultIP):
     def __init__(self,description):
         super().__init__(description=description)
         
-    bindto = ["xilinx.com:ip:ofdm_rx:0.4"]
+    bindto = ["strathsdr.org:PYNQ-SDR:ofdm_rx:0.5"]
     
     @property
     def reset(self):

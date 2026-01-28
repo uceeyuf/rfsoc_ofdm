@@ -12,12 +12,16 @@
 </table>
 
 # RFSoC OFDM Transceiver
-This repository contains an RFSoC demonstration of an Orthogonal Frequency Division Multiplexing (OFDM) transceiver. The OFDM system is only compatible with [PYNQ images v2.7](https://github.com/Xilinx/PYNQ/releases) and greater for the following RFSoC development boards:
+This repository contains an RFSoC demonstration of an Orthogonal Frequency Division Multiplexing (OFDM) transceiver. The OFDM system is only compatible with [PYNQ images v3.1.1](https://github.com/Xilinx/PYNQ/releases) and greater for the following RFSoC development boards:
 * [ZCU208](https://www.xilinx.com/products/boards-and-kits/zcu208.html),
-* [ZCU216](https://www.xilinx.com/products/boards-and-kits/zcu216.html),
 * [ZCU111](https://www.xilinx.com/products/boards-and-kits/zcu111.html),
-* [RFSoC4x2](http://rfsoc-pynq.io/), 
-* [RFSoC2x2](http://rfsoc-pynq.io/).
+* [RFSoC4x2](http://rfsoc-pynq.io/),
+* [RFSoC2x2](http://rfsoc-pynq.io/),
+
+The following boards are limited to PYNQ version 2.7 and Vivado 2020.2 since this board is not officially supported by PYNQ and no official SD card image exists:
+* [ZCU216](https://www.xilinx.com/products/boards-and-kits/zcu216.html).
+
+The SD card image for this board has been made available from the following repository: [sarafs1926/ZCU216-PYNQ](https://github.com/sarafs1926/ZCU216-PYNQ).
 
 <p align="center">
   <img src="demonstration.gif"/>
@@ -66,6 +70,9 @@ Alternatively, you can run the entire project build by executing the following i
 ```sh
 make all
 ```
+
+## Github Actions
+Testing to see if Github actions will work now.
 
 ## License
 [BSD 3-Clause](/LICENSE)
