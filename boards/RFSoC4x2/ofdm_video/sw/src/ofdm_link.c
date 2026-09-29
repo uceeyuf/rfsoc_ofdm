@@ -84,8 +84,16 @@ static int dma_init(void)
         xil_printf("AXI DMA init failed\r\n");
         return -1;
     }
+    /* also used for re-initialisation: drop anything in flight */
+    XAxiDma_Reset(&dma);
+    while (!XAxiDma_ResetIsDone(&dma))
+        ;
     XAxiDma_IntrDisable(&dma, XAXIDMA_IRQ_ALL_MASK, XAXIDMA_DMA_TO_DEVICE);
     XAxiDma_IntrDisable(&dma, XAXIDMA_IRQ_ALL_MASK, XAXIDMA_DEVICE_TO_DMA);
+    tx_busy = 0;
+    txq_head = txq_tail = 0;
+    pn = 0;
+    rx_have_seq = 0;
     rx_cur = 0;
     rx_arm(rx_cur);
     return 0;
@@ -242,6 +250,8 @@ static void rx_poll(void)
     Xil_DCacheInvalidateRange((UINTPTR)rxbuf[done], RXBUF_SZ);
     link_stats.rx_frames++;
     link_stats.rx_bytes += n;
+    if (n != 745U * (cur_mod == MOD_BPSK ? 1 : cur_mod == MOD_QPSK ? 2 : 4))
+        link_stats.rx_badlen++;
     if (n > RXBUF_SZ)
         n = RXBUF_SZ;
     if (pn + n > PARSE_SZ)
@@ -294,9 +304,9 @@ void link_print_status(void)
                Xil_In32(RXDM_BASE + 0x18), r & 0xFFFF, r >> 16,
                XAxiDma_ReadReg(dma.RegBase, XAXIDMA_TX_OFFSET + XAXIDMA_SR_OFFSET),
                XAxiDma_ReadReg(dma.RegBase, XAXIDMA_RX_OFFSET + XAXIDMA_SR_OFFSET));
-    xil_printf("link tx %d pkts (%d dropped) | rx %d pkts, %d crc errors, %d lost",
-               link_stats.tx_pkts, link_stats.tx_drops, link_stats.rx_pkts,
-               link_stats.rx_crc_err, link_stats.rx_lost);
+    xil_printf("link tx %d pkts (%d dropped) | rx %d frames (%d wrong length), %d pkts, %d crc errors, %d lost",
+               link_stats.tx_pkts, link_stats.tx_drops, link_stats.rx_frames, link_stats.rx_badlen,
+               link_stats.rx_pkts, link_stats.rx_crc_err, link_stats.rx_lost);
     if (st_on)
         xil_printf(" | self-test ok %d bad %d", link_stats.st_ok, link_stats.st_bad);
     xil_printf("\r\n");

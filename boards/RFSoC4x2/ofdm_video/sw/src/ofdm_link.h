@@ -28,7 +28,7 @@ typedef void (*link_rx_cb)(u16 seq, const u8 *payload, u16 len);
 
 typedef struct {
     u32 tx_pkts, tx_drops, tx_bytes;
-    u32 rx_frames, rx_bytes;
+    u32 rx_frames, rx_bytes, rx_badlen;    /* rx_badlen: frames not 5960 symbols long */
     u32 rx_pkts, rx_crc_err, rx_lost, rx_payload;
     u32 st_ok, st_bad;          /* self-test payload check */
 } link_stats_t;

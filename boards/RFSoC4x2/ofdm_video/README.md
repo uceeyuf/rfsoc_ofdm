@@ -41,9 +41,18 @@ OFDM frame: 320-sample preamble + 127 data symbols + equal idle time, 20640 samp
 
 **Simulation** (`sim/`, TX core → RX core at baseband, random payload): every received frame matches the transmitted byte stream, contiguous from the first frame, for BPSK, QPSK and 16-QAM.
 
-**Implementation** (Vivado 2020.2, XCZU48DR-2, with the ILA): 27.1 k LUT (6.4 %), 40.5 k FF (4.8 %), 41 BRAM, 191 DSP, all constraints met (WNS +0.110 ns). Bitstream + XSA in about 15 min.
+**Implementation** (Vivado 2020.2, XCZU48DR-2, with the ILA): 27.1 k LUT (6.4 %), 40.5 k FF (4.8 %), 41 BRAM, 191 DSP, all constraints met (WNS +0.251 ns). Bitstream + XSA in about 15 min.
 
-Over-the-air results on the board: *to be added*.
+**On the board** (DAC_B → SMA cable → ADC_B, 600 MHz carrier, UART self-test, 1316-byte packets):
+
+| modulation | measured payload rate | CRC errors |
+| :--------: | :-------------------: | :--------: |
+| BPSK       | 5.86 Mb/s             | 0 / 5 000 packets |
+| QPSK       | 11.71 Mb/s            | 0 / 15 000 packets |
+| 16-QAM     | 23.44 Mb/s            | 1 / 20 000 packets |
+
+Switching the modulation at run time costs one or two packets.
+If the link shows periodic error bursts right after power-on, reload the design (LMK PLL1 settling).
 
 　
 
@@ -64,7 +73,7 @@ produces `design_1_wrapper.xsa` (bitstream included).
 xsct sw/create_vitis.tcl
 ```
 
-builds `sw/vitis_ws/ofdm_video/Debug/ofdm_video.elf`. Run it on the A53 from Vitis (UART1, 115200).
+builds `sw/vitis_ws/ofdm_video/Debug/ofdm_video.elf`. `xsct sw/run_jtag.tcl` loads bitstream + ELF over JTAG (UART1, 115200); `vivado -mode batch -source sw/ila_capture.tcl` dumps the receiver constellation to `ila_rx.csv`.
 
 **Link test**: connect DAC_B to ADC_B with an SMA cable and a 10–20 dB attenuator. On the UART press `t` for the self-test; the 1 s status line shows the payload rate, CRC errors and lost packets. `1` / `2` / `4` select BPSK / QPSK / 16-QAM, `+` / `-` move the carrier, `s` prints the PL counters.
 
@@ -140,9 +149,17 @@ OFDM 帧：320 点前导 + 127 个数据符号 + 等长空闲，共 20640 点，
 
 **仿真**（`sim/`，基带 TX 核直连 RX 核，随机载荷）：BPSK、QPSK、16-QAM 下每一帧收到的字节都与发送字节流一致，从第一帧起连续。
 
-**实现**（Vivado 2020.2，XCZU48DR-2，含 ILA）：27.1 k LUT（6.4 %）、40.5 k FF（4.8 %）、41 BRAM、191 DSP，时序全部满足（WNS +0.110 ns），bitstream + XSA 约 15 分钟。
+**实现**（Vivado 2020.2，XCZU48DR-2，含 ILA）：27.1 k LUT（6.4 %）、40.5 k FF（4.8 %）、41 BRAM、191 DSP，时序全部满足（WNS +0.251 ns），bitstream + XSA 约 15 分钟。
 
-上板空口测试结果：*待补充*。
+**上板结果**（DAC_B → SMA 线 → ADC_B，载波 600 MHz，串口自测，1316 字节包）：
+
+| 调制 | 实测载荷速率 | CRC 错误 |
+| :--: | :----------: | :------: |
+| BPSK | 5.86 Mb/s | 0 / 5 000 包 |
+| QPSK | 11.71 Mb/s | 0 / 15 000 包 |
+| 16-QAM | 23.44 Mb/s | 1 / 20 000 包 |
+
+运行时切换调制只丢一两个包。上电后如果出现周期性误码突发，重新加载一次设计即可（LMK PLL1 稳定问题）。
 
 　
 
@@ -163,7 +180,7 @@ vivado -mode batch -source make_project.tcl -tclargs build
 xsct sw/create_vitis.tcl
 ```
 
-生成 `sw/vitis_ws/ofdm_video/Debug/ofdm_video.elf`，在 Vitis 里下载到 A53 运行（UART1，115200）。
+生成 `sw/vitis_ws/ofdm_video/Debug/ofdm_video.elf`。`xsct sw/run_jtag.tcl` 通过 JTAG 下载 bitstream 和 ELF（UART1，115200）；`vivado -mode batch -source sw/ila_capture.tcl` 把接收星座点导出到 `ila_rx.csv`。
 
 **链路测试**：DAC_B 通过 SMA 线和 10–20 dB 衰减器接 ADC_B。串口按 `t` 进入自测，每秒状态行显示载荷速率、CRC 错误和丢包。`1` / `2` / `4` 切换 BPSK / QPSK / 16-QAM，`+` / `-` 调载波，`s` 打印 PL 计数器。
 

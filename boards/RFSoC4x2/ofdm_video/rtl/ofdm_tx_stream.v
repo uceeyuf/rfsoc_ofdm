@@ -179,8 +179,14 @@ reg  [4:0]  pos;
 wire [5:0]  pos_sum   = pos + bps;
 wire        word_done = ext_pop && in_win && pos_sum[5];
 
+// In the idle time between frames, move to the next byte boundary so that every frame
+// starts on a byte (needed after a modulation change; a no-op in steady state).
+wire        realign   = (gap_cnt == GAP / 2) && (pos[2:0] != 3'd0);
+wire [5:0]  pos_align = {1'b0, pos[4:3], 3'b000} + 6'd8;
+wire        next_word = word_done || (realign && pos_align[5]);
+
 assign ext_data      = in_win ? (cur >> pos) : prbs_word[9:0];
-assign s_axis_tready = word_done;
+assign s_axis_tready = next_word;
 
 always @(posedge aclk) begin
     if (ext_pop) begin
@@ -199,17 +205,19 @@ always @(posedge aclk) begin
     if (ext_pop && !in_win)
         lfsr <= lfsr_nx;
 
-    if (ext_pop && in_win) begin
+    if (ext_pop && in_win)
         pos <= pos_sum[5] ? 5'd0 : pos_sum[4:0];
-        if (pos_sum[5]) begin
-            if (s_axis_tvalid) begin
-                cur <= s_axis_tdata;
-                data_words <= data_words + 32'd1;
-            end else begin
-                cur <= prbs_word;
-                lfsr <= lfsr_nx;
-                fill_words <= fill_words + 32'd1;
-            end
+    else if (realign)
+        pos <= pos_align[4:0];
+
+    if (next_word) begin
+        if (s_axis_tvalid) begin
+            cur <= s_axis_tdata;
+            data_words <= data_words + 32'd1;
+        end else begin
+            cur <= prbs_word;
+            lfsr <= lfsr_nx;
+            fill_words <= fill_words + 32'd1;
         end
     end
 

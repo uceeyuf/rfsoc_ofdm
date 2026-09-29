@@ -53,9 +53,9 @@ static void print_rate(void)
     t_last = now;
     if (verbose && dt_ms) {
         u32 tx_kbps = (tx - tx_last) * 8 / dt_ms, rx_kbps = (rx - rx_last) * 8 / dt_ms;
-        xil_printf("tx %d.%02d Mb/s  rx %d.%02d Mb/s  pkts %d  crc err %d  lost %d",
+        xil_printf("tx %d.%02d Mb/s  rx %d.%02d Mb/s  pkts %d  crc err %d  lost %d  bad frames %d",
                    tx_kbps / 1000, (tx_kbps % 1000) / 10, rx_kbps / 1000, (rx_kbps % 1000) / 10,
-                   link_stats.rx_pkts, link_stats.rx_crc_err, link_stats.rx_lost);
+                   link_stats.rx_pkts, link_stats.rx_crc_err, link_stats.rx_lost, link_stats.rx_badlen);
         if (selftest_enabled())
             xil_printf("  self-test ok %d bad %d", link_stats.st_ok, link_stats.st_bad);
         else

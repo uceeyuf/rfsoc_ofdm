@@ -140,6 +140,7 @@ always @(posedge clk) begin
 end
 
 reg [31:0] rd;
+integer fr;
 initial begin
     f_pop  = $fopen("tx_pops.txt", "w");
     f_sym  = $fopen("rx_syms.txt", "w");
@@ -158,7 +159,17 @@ initial begin
     `AXIL_WRITE(tx, 16'h0104, 1)            // enable
 
     // one frame is 20640 samples x 12 clocks
-    repeat (`NFRAMES) begin
+    for (fr = 0; fr < `NFRAMES; fr = fr + 1) begin
+`ifdef MOD2
+        if (fr == 1) begin
+            // change modulation in the middle of the second frame
+            repeat (20640*6) @(posedge clk);
+            `AXIL_WRITE(tx, 16'h0100, `MOD2)
+            `AXIL_WRITE(dm, 6'h00, `MOD2)
+            $display("t=%0t modulation -> %0d", $time, `MOD2);
+            repeat (20640*6 - 40) @(posedge clk);
+        end else
+`endif
         repeat (20640*12) @(posedge clk);
         `AXIL_READ(dm, 6'h18, rd) $display("t=%0t rx frames %0d", $time, rd);
         `AXIL_READ(dm, 6'h1C, rd) $display("  symbols in last rx frame %0d, dropped beats %0d", rd[15:0], rd[31:16]);

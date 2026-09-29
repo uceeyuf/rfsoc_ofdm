@@ -17,3 +17,4 @@ sim/*.pkl
 sw/*.txt
 sim/.Xil/
 sim/webtalk*
+sw/ila_rx.csv
