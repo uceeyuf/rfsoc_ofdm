@@ -49,11 +49,11 @@ Below saturation the loss is 0.01–0.04 %; above it the extra load is dropped a
 | :-----------------------------------------------: |
 | **Figure3** : offered vs delivered UDP throughput |
 
-Video: 20 s of 720p30 H.264 at 2 Mb/s over QPSK, 593 / 600 frames decoded, PSNR 40.2 dB average; frames without a lost packet are bit-identical to the source.
+Video: 20 s of a 720p30 test clip (bars and a moving ball), H.264 at 2 Mb/s over QPSK: 591 / 600 frames decoded, 3 damaged macroblocks; frames without a lost packet are bit-identical to the sent stream. Recorded at a 700 MHz carrier (key `+`): in that session 600 MHz lost about 4 × 10⁻³ of the packets, 700 MHz 1.3 × 10⁻⁴.
 
-| ![video](./docs/img/video_rx_frame.png)            |
-| :------------------------------------------------: |
-| **Figure4** : a received frame of the test stream |
+| ![video](./docs/img/video_ofdm.gif)                                                       |
+| :---------------------------------------------------------------------------------------: |
+| **Figure4** : source clip on the PC (left) and the stream received over the link (right) |
 
 Simulation (`sim/`, TX core → RX core): every frame byte-exact and contiguous for BPSK / QPSK / 16-QAM and across a live 16-QAM → BPSK switch. Implementation (Vivado 2020.2, with the ILA): 27.1 k LUT (6.4 %), 40.5 k FF, 41 BRAM, 191 DSP, WNS +0.251 ns.
 
@@ -138,11 +138,11 @@ DAC_B → SMA 线 → ADC_B，载波 600 MHz，每包 1316 字节。端到端 = 
 | :--------------------------------------: |
 | **图3** : UDP 吞吐：发送 vs 交付          |
 
-视频：720p30 H.264 2 Mb/s 走 QPSK 20 秒，600 帧解出 593 帧，平均 PSNR 40.2 dB；没有丢包的帧与源逐比特一致。
+视频：720p30 测试片（彩条加移动小球）20 秒，H.264 2 Mb/s 走 QPSK：600 帧解出 591 帧，3 个宏块受损；没有丢包的帧与发出的码流逐比特一致。录制时载波为 700 MHz（按 `+`）：那次 600 MHz 的丢包率约 4 × 10⁻³，700 MHz 为 1.3 × 10⁻⁴。
 
-| ![video](./docs/img/video_rx_frame.png) |
-| :-------------------------------------: |
-| **图4** : 收到的测试视频画面            |
+| ![video](./docs/img/video_ofdm.gif)                    |
+| :----------------------------------------------------: |
+| **图4** : 左边是 PC 上的原片，右边是经链路收到的码流 |
 
 仿真（`sim/`，TX 核直连 RX 核）：BPSK / QPSK / 16-QAM 及 16-QAM → BPSK 在线切换，每帧逐字节一致且连续。实现（Vivado 2020.2，含 ILA）：27.1 k LUT（6.4 %）、40.5 k FF、41 BRAM、191 DSP，WNS +0.251 ns。
 

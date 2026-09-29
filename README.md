@@ -35,9 +35,9 @@ This fork adds **[boards/RFSoC4x2/ofdm_video](./boards/RFSoC4x2/ofdm_video/READM
 | QPSK       | **11.83 Mb/s**        | 0 / 15 000           |
 | 16-QAM     | **23.55 Mb/s**        | 1 / 20 000           |
 
-| ![video](./boards/RFSoC4x2/ofdm_video/docs/img/video_rx_frame.png) |
-| :----------------------------------------------------------------: |
-| **Figure3** : a frame of a 720p H.264 stream received over QPSK    |
+| ![video](./boards/RFSoC4x2/ofdm_video/docs/img/video_ofdm.gif)                   |
+| :------------------------------------------------------------------------------: |
+| **Figure3** : 720p H.264 at 2 Mb/s over the OFDM link (QPSK), source vs received |
 
 Build, run and all results: [boards/RFSoC4x2/ofdm_video](./boards/RFSoC4x2/ofdm_video/README.md) (Vivado / Vitis 2020.2).
 
@@ -115,9 +115,9 @@ Fork 自 [strath-sdr/rfsoc_ofdm](https://github.com/strath-sdr/rfsoc_ofdm)（Uni
 | QPSK | **11.83 Mb/s** | 0 / 15 000 |
 | 16-QAM | **23.55 Mb/s** | 1 / 20 000 |
 
-| ![video](./boards/RFSoC4x2/ofdm_video/docs/img/video_rx_frame.png) |
-| :----------------------------------------------------------------: |
-| **图3** : 经 QPSK 收到的 720p H.264 视频画面                       |
+| ![video](./boards/RFSoC4x2/ofdm_video/docs/img/video_ofdm.gif)  |
+| :-------------------------------------------------------------: |
+| **图3** : 720p H.264 2 Mb/s 经 OFDM 链路（QPSK）：原片与接收画面 |
 
 编译、运行和全部结果见 [boards/RFSoC4x2/ofdm_video](./boards/RFSoC4x2/ofdm_video/README.md)（Vivado / Vitis 2020.2）。
 
