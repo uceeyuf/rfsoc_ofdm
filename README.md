@@ -56,6 +56,26 @@ Build, run and all results: [boards/RFSoC4x2/ofdm_video](./boards/RFSoC4x2/ofdm_
 
 　
 
+## Citation
+
+If this work helps your research, please cite it:
+
+```bibtex
+@misc{yu2026rfsoc_ofdm_video,
+    author = {Yijie Yu},
+    title = {{RFSoC OFDM Transceiver with a Compressed Video Link}},
+    year = {2026},
+    howpublished = {\url{https://github.com/uceeyuf/rfsoc_ofdm}},
+    note = {GitHub repository},
+}
+```
+
+This is a fork: for the original design please also cite [rfsoc_ofdm](https://github.com/strath-sdr/rfsoc_ofdm) by Lewis Davin McLaughlin (University of Strathclyde).
+
+GitHub also offers the citation under **Cite this repository** (from [CITATION.cff](CITATION.cff)).
+
+　
+
 ## License
 
 BSD 3-Clause. Upstream: University of Strathclyde (license declared in `setup.py`; the repository has no LICENSE file). `boards/RFSoC4x2/ofdm_video`: Copyright (c) 2026, Yijie Yu.
@@ -113,6 +133,26 @@ Fork 自 [strath-sdr/rfsoc_ofdm](https://github.com/strath-sdr/rfsoc_ofdm)（Uni
 * 板上安装（需联网）后在 Jupyter Lab 打开 `rfsoc_ofdm` notebook：
   `pip3 install https://github.com/strath-sdr/rfsoc_ofdm/releases/download/v0.4.0/rfsoc_ofdm.tar.gz`，然后 `python -m rfsoc_ofdm install`。
 * 工程文件：Vivado 2020.2 与 MATLAB R2020a（HDL Coder 模型在 `boards/ip/hdl_coder`）；各板卡在 `boards/<board>/rfsoc_ofdm` 下 `make`。
+
+　
+
+## 引用
+
+如果这个项目对你的研究有帮助，请引用：
+
+```bibtex
+@misc{yu2026rfsoc_ofdm_video,
+    author = {Yijie Yu},
+    title = {{RFSoC OFDM Transceiver with a Compressed Video Link}},
+    year = {2026},
+    howpublished = {\url{https://github.com/uceeyuf/rfsoc_ofdm}},
+    note = {GitHub repository},
+}
+```
+
+这是一个 fork：原设计请同时引用 Lewis Davin McLaughlin（University of Strathclyde）的 [rfsoc_ofdm](https://github.com/strath-sdr/rfsoc_ofdm)。
+
+GitHub 仓库页的 **Cite this repository** 也提供同样的引用（来自 [CITATION.cff](CITATION.cff)）。
 
 　
 

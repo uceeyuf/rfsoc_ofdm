@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+type: software
+title: "RFSoC OFDM Transceiver with a Compressed Video Link"
+authors:
+  - family-names: "Yu"
+    given-names: "Yijie"
+repository-code: "https://github.com/uceeyuf/rfsoc_ofdm"
+url: "https://github.com/uceeyuf/rfsoc_ofdm"
+date-released: 2026-09-29
+license: BSD-3-Clause
+keywords:
+  - "RFSoC"
+  - "OFDM"
+  - "H.264"
+  - "SDR"
+  - "FPGA"
+references:
+  - type: software
+    title: "rfsoc_ofdm"
+    authors:
+      - family-names: "McLaughlin"
+        given-names: "Lewis Davin"
+        affiliation: "University of Strathclyde"
+    url: "https://github.com/strath-sdr/rfsoc_ofdm"
