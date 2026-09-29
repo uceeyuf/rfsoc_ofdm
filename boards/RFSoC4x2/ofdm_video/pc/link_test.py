@@ -34,7 +34,7 @@ t_end = t0 + args.seconds
 
 while True:
     now = time.perf_counter()
-    if now < t_end and now >= t_next:
+    while now < t_end and now >= t_next:        # catch up: Windows sleep() is coarse
         tx.sendto(struct.pack('<I', sent) + body, (args.board, 5000))
         sent += 1
         t_next += interval

@@ -52,6 +52,8 @@ OFDM frame: 320-sample preamble + 127 data symbols + equal idle time, 20640 samp
 | 16-QAM     | 23.44 Mb/s            | 1 / 20 000 packets |
 
 Switching the modulation at run time costs one or two packets.
+
+**End to end** (PC → UDP → board → OFDM → board → UDP → PC, `pc/link_test.py`): throughput saturates at **5.98 / 11.83 / 23.55 Mb/s** (BPSK / QPSK / 16-QAM), below that the loss is 0.01–0.04 %; above it the extra load is dropped at the board TX queue, never corrupted. Over 940 k packets the CRC error rate was 1.6 × 10⁻⁴, including modulation changes. A 20 s 720p H.264 stream at 2 Mb/s (QPSK): 593/600 frames decoded, PSNR 40.2 dB average, error-free frames bit-identical to the source.
 If the link shows periodic error bursts right after power-on, reload the design (LMK PLL1 settling).
 
 　
@@ -84,7 +86,7 @@ pc\play.bat
 pc\send_video.bat input.mp4 2M
 ```
 
-(`pc\send_camera.bat "camera name"` for a webcam, `python pc\link_test.py --rate 8` for a UDP throughput test).
+(`pc\send_camera.bat "camera name"` for a webcam, `python pc\link_test.py --rate 8` for a UDP throughput test). If the firewall blocks ffplay, record with `python pcecv_ts.py rx.ts --relay 5002` and play `udp://127.0.0.1:5002`.
 
 　
 
@@ -159,7 +161,9 @@ OFDM 帧：320 点前导 + 127 个数据符号 + 等长空闲，共 20640 点，
 | QPSK | 11.71 Mb/s | 0 / 15 000 包 |
 | 16-QAM | 23.44 Mb/s | 1 / 20 000 包 |
 
-运行时切换调制只丢一两个包。上电后如果出现周期性误码突发，重新加载一次设计即可（LMK PLL1 稳定问题）。
+运行时切换调制只丢一两个包。
+
+**端到端**（PC → UDP → 板卡 → OFDM → 板卡 → UDP → PC，`pc/link_test.py`）：吞吐饱和于 **5.98 / 11.83 / 23.55 Mb/s**（BPSK / QPSK / 16-QAM），未饱和时丢包 0.01–0.04 %；超出部分在板卡 TX 队列丢弃，不会出错包。94 万包累计 CRC 错误率 1.6 × 10⁻⁴（含调制切换）。20 秒 720p H.264 2 Mb/s 视频（QPSK）：600 帧解出 593 帧，平均 PSNR 40.2 dB，无错帧与源逐比特一致。上电后如果出现周期性误码突发，重新加载一次设计即可（LMK PLL1 稳定问题）。
 
 　
 
@@ -191,7 +195,7 @@ pc\play.bat
 pc\send_video.bat input.mp4 2M
 ```
 
-（摄像头用 `pc\send_camera.bat "摄像头名"`，UDP 吞吐测试用 `python pc\link_test.py --rate 8`）。
+（摄像头用 `pc\send_camera.bat "摄像头名"`，UDP 吞吐测试用 `python pc\link_test.py --rate 8`）。防火墙拦 ffplay 时，可用 `python pcecv_ts.py rx.ts --relay 5002` 录制并转发，再播放 `udp://127.0.0.1:5002`。
 
 　
 
