@@ -86,7 +86,7 @@ pc\play.bat
 pc\send_video.bat input.mp4 2M
 ```
 
-(`pc\send_camera.bat "camera name"` for a webcam, `python pc\link_test.py --rate 8` for a UDP throughput test). If the firewall blocks ffplay, record with `python pcecv_ts.py rx.ts --relay 5002` and play `udp://127.0.0.1:5002`.
+(`pc\send_camera.bat "camera name"` for a webcam, `python pc\link_test.py --rate 8` for a UDP throughput test). If the firewall blocks ffplay, record with `python pc\recv_ts.py rx.ts --relay 5002` and play `udp://127.0.0.1:5002`.
 
 　
 
@@ -195,7 +195,7 @@ pc\play.bat
 pc\send_video.bat input.mp4 2M
 ```
 
-（摄像头用 `pc\send_camera.bat "摄像头名"`，UDP 吞吐测试用 `python pc\link_test.py --rate 8`）。防火墙拦 ffplay 时，可用 `python pcecv_ts.py rx.ts --relay 5002` 录制并转发，再播放 `udp://127.0.0.1:5002`。
+（摄像头用 `pc\send_camera.bat "摄像头名"`，UDP 吞吐测试用 `python pc\link_test.py --rate 8`）。防火墙拦 ffplay 时，可用 `python pc\recv_ts.py rx.ts --relay 5002` 录制并转发，再播放 `udp://127.0.0.1:5002`。
 
 　
 
