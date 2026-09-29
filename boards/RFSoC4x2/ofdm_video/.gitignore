@@ -1,0 +1,19 @@
+# Vivado / Vitis outputs
+ofdm_video/
+*.log
+*.jou
+*.backup.log
+build_console.txt
+timing_summary.rpt
+*.xsa
+.Xil/
+sw/vitis_ws/
+# simulation outputs
+sim/xsim.dir/
+sim/*.pb
+sim/*.wdb
+sim/*.txt
+sim/*.pkl
+sw/*.txt
+sim/.Xil/
+sim/webtalk*

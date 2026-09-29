@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 330" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#444"/>
+    </marker>
+    <style>
+      .ps{fill:#e8f0fe;stroke:#4a78c2}
+      .pl{fill:#eaf6ea;stroke:#3f8f3f}
+      .new{fill:#fff3dc;stroke:#d08a00}
+      .rf{fill:#fde8e8;stroke:#c24a4a}
+      .pc{fill:#f1f1f1;stroke:#777}
+      rect{stroke-width:1.4;rx:6;ry:6}
+      line,path.l{stroke:#444;stroke-width:1.4;fill:none;marker-end:url(#a)}
+      .t{text-anchor:middle}
+      .s{font-size:11px;fill:#555;text-anchor:middle}
+    </style>
+  </defs>
+
+  <!-- PC -->
+  <rect class="pc" x="10" y="60" width="110" height="60"/>
+  <text class="t" x="65" y="85">PC: ffmpeg</text><text class="s" x="65" y="102">H.264 / MPEG-TS</text>
+  <rect class="pc" x="10" y="210" width="110" height="60"/>
+  <text class="t" x="65" y="235">PC: ffplay</text><text class="s" x="65" y="252">UDP 5001</text>
+
+  <!-- PS -->
+  <rect class="ps" x="150" y="40" width="150" height="250"/>
+  <text class="t" x="225" y="62">PS (A53, bare metal)</text>
+  <text class="s" x="225" y="85">lwIP UDP 5000 / 5001</text>
+  <text class="s" x="225" y="105">link packet: ASM, len,</text>
+  <text class="s" x="225" y="120">seq, CRC32</text>
+  <text class="s" x="225" y="245">ASM search + CRC check</text>
+  <text class="s" x="225" y="265">LMK/LMX via SPI0, RFDC</text>
+
+  <!-- TX chain -->
+  <rect class="pl" x="330" y="65" width="90" height="50"/><text class="t" x="375" y="87">AXI DMA</text><text class="s" x="375" y="103">MM2S + FIFO</text>
+  <rect class="new" x="445" y="55" width="130" height="70"/><text class="t" x="510" y="80">ofdm_tx_stream</text><text class="s" x="510" y="97">bit source + ofdm_tx</text><text class="s" x="510" y="111">(PRBS source removed)</text>
+  <rect class="pl" x="600" y="65" width="100" height="50"/><text class="t" x="650" y="87">interpolator</text><text class="s" x="650" y="103">20.48 → 491.52 MSPS</text>
+  <rect class="rf" x="725" y="65" width="100" height="50"/><text class="t" x="775" y="87">DAC_B</text><text class="s" x="775" y="103">tile 228 ch0</text>
+
+  <!-- RX chain -->
+  <rect class="rf" x="725" y="215" width="100" height="50"/><text class="t" x="775" y="237">ADC_B</text><text class="s" x="775" y="253">tile 226 ch0</text>
+  <rect class="pl" x="600" y="215" width="100" height="50"/><text class="t" x="650" y="237">decimator</text><text class="s" x="650" y="253">+ ofdm_rx</text>
+  <rect class="new" x="445" y="205" width="130" height="70"/><text class="t" x="510" y="230">ofdm_rx_demap</text><text class="s" x="510" y="247">slicer + byte packer</text><text class="s" x="510" y="261">1 packet / OFDM frame</text>
+  <rect class="pl" x="330" y="215" width="90" height="50"/><text class="t" x="375" y="237">AXI DMA</text><text class="s" x="375" y="253">FIFO + S2MM</text>
+
+  <!-- RF loop -->
+  <path class="l" d="M825,90 H880 V240 H825"/>
+  <text x="888" y="160" font-size="12">SMA cable</text><text x="888" y="176" font-size="12">+ attenuator</text>
+  <text x="888" y="192" font-size="12">600 MHz</text>
+
+  <!-- arrows -->
+  <line x1="120" y1="90" x2="150" y2="90"/>
+  <line x1="300" y1="90" x2="330" y2="90"/>
+  <line x1="420" y1="90" x2="445" y2="90"/>
+  <line x1="575" y1="90" x2="600" y2="90"/>
+  <line x1="700" y1="90" x2="725" y2="90"/>
+  <line x1="725" y1="240" x2="700" y2="240"/>
+  <line x1="600" y1="240" x2="575" y2="240"/>
+  <line x1="445" y1="240" x2="420" y2="240"/>
+  <line x1="330" y1="240" x2="300" y2="240"/>
+  <line x1="150" y1="240" x2="120" y2="240"/>
+
+  <text class="s" x="510" y="20" font-size="12">clk_dac0 245.76 MHz (TX)  /  clk_adc2 245.76 MHz (RX)  /  pl_clk0 100 MHz (DMA, AXI-Lite)</text>
+  <rect class="new" x="330" y="300" width="14" height="12"/><text x="350" y="310" font-size="11" fill="#555">new in this fork</text>
+  <rect class="pl" x="460" y="300" width="14" height="12"/><text x="480" y="310" font-size="11" fill="#555">Xilinx / strath-sdr IP</text>
+</svg>

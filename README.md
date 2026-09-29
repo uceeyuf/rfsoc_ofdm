@@ -12,6 +12,8 @@
 </table>
 
 # RFSoC OFDM Transceiver
+
+> **Fork note:** [`boards/RFSoC4x2/ofdm_video`](boards/RFSoC4x2/ofdm_video) adds a bare-metal RFSoC4x2 design that carries user data (compressed H.264 video over UDP) on this OFDM PHY: DAC_B tile 228 ch0 → ADC_B tile 226 ch0, clocks over PS SPI, no PYNQ.
 This repository contains an RFSoC demonstration of an Orthogonal Frequency Division Multiplexing (OFDM) transceiver. The OFDM system is only compatible with [PYNQ images v3.1.1](https://github.com/Xilinx/PYNQ/releases) and greater for the following RFSoC development boards:
 * [ZCU208](https://www.xilinx.com/products/boards-and-kits/zcu208.html),
 * [ZCU111](https://www.xilinx.com/products/boards-and-kits/zcu111.html),
