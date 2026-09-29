@@ -1,77 +1,121 @@
-<img src="strathsdr_banner.png" width="100%">
+![语言](https://img.shields.io/badge/语言-Verilog_+_VHDL_(HDL_Coder)-9A90FD.svg) ![仿真](https://img.shields.io/badge/仿真-xsim-green.svg) ![部署](https://img.shields.io/badge/部署-vivado_2020.2-FF1010.svg) ![板卡](https://img.shields.io/badge/板卡-RFSoC_4x2-blue.svg)
 
-<table border="0" align="center">
-    <tr border="0">
-        <td align="center" width="50%" border="0">
-            <img src="https://www.rfsocbook.com/wp-content/uploads/2022/12/RFSoC3D_v4-1433x1536.png" alt="oscthumb" style="width: 60%" border="0"/>
-        </td>
-        <td align="center" width="50%" border="0">
-            <font size=7><b>Available Now!</b></font size> <br> <font size=5>Software Defined Radio with Zynq® UltraScale+ RFSoC</font size> <br> <font size=4><a href="https://rfsocbook.com/">Free Download</a> <br><a href="https://www.amazon.com/Software-Defined-Radio-Ultrascale-RFSoC/dp/1739588606?keywords=zynq+rfsoc&qid=1673452844&sprefix=%2Caps%2C137&sr=8-1&linkCode=ll1&tag=thzybo-20&linkId=0bf245a543fd4af4625086df4c190928&language=en_US&ref_=as_li_ss_tl">Printed Edition</a></font size>
-        </td>
-    </tr>
-</table>
+[English](#en) | [中文](#cn)
 
-# RFSoC OFDM Transceiver
+　
 
-> **Fork note:** [`boards/RFSoC4x2/ofdm_video`](boards/RFSoC4x2/ofdm_video) adds a bare-metal RFSoC4x2 design that carries user data (compressed H.264 video over UDP) on this OFDM PHY: DAC_B tile 228 ch0 → ADC_B tile 226 ch0, clocks over PS SPI, no PYNQ.
-This repository contains an RFSoC demonstration of an Orthogonal Frequency Division Multiplexing (OFDM) transceiver. The OFDM system is only compatible with [PYNQ images v3.1.1](https://github.com/Xilinx/PYNQ/releases) and greater for the following RFSoC development boards:
-* [ZCU208](https://www.xilinx.com/products/boards-and-kits/zcu208.html),
-* [ZCU111](https://www.xilinx.com/products/boards-and-kits/zcu111.html),
-* [RFSoC4x2](http://rfsoc-pynq.io/),
-* [RFSoC2x2](http://rfsoc-pynq.io/),
+<span id="en">RFSoC OFDM Transceiver with a Compressed Video Link</span>
+===========================
 
-The following boards are limited to PYNQ version 2.7 and Vivado 2020.2 since this board is not officially supported by PYNQ and no official SD card image exists:
-* [ZCU216](https://www.xilinx.com/products/boards-and-kits/zcu216.html).
+Fork of [strath-sdr/rfsoc_ofdm](https://github.com/strath-sdr/rfsoc_ofdm) (University of Strathclyde), an OFDM transceiver demonstrator for RFSoC boards (802.11-style: 64-point FFT, 48 data + 4 pilot sub-carriers, BPSK to 1024-QAM) running as a PYNQ overlay. Upstream, the transmitter sends PRBS and the receiver only displays constellations.
 
-The SD card image for this board has been made available from the following repository: [sarafs1926/ZCU216-PYNQ](https://github.com/sarafs1926/ZCU216-PYNQ).
+This fork adds **[boards/RFSoC4x2/ofdm_video](./boards/RFSoC4x2/ofdm_video/README.md)**: the same PHY carrying real data, compressed H.264 video over UDP, bare metal on the RFSoC 4x2, **DAC_B (tile 228 ch0) → ADC_B (tile 226 ch0)**, clocks programmed over PS SPI (no PYNQ). Measured on the board: **5.98 / 11.83 / 23.55 Mb/s** end to end with BPSK / QPSK / 16-QAM, EVM −35 dB, 720p H.264 received bit-exact.
 
-<p align="center">
-  <img src="demonstration.gif"/>
-<p/>
+　
 
-## Quick Start
-Follow the instructions below to install the OFDM demonstrator on your development board. **You will need to give your board access to the internet**.
-* Power on your RFSoC development board with an SD Card containing a fresh PYNQ v2.7 image or greater.
-* Navigate to Jupyter Labs by opening a browser (preferably Chrome) and connecting to `http://<board_ip_address>:9090/lab`.
-* We need to open a terminal in Jupyter Lab. Firstly, open a launcher window as shown in the figure below:
+| ![arch](./boards/RFSoC4x2/ofdm_video/docs/img/arch.svg) |
+| :-----------------------------------------------------: |
+| **Figure1** : video link data path                      |
 
-<p align="center">
-  <img src="./open_jupyter_launcher.jpg" width="50%" height="50%" />
-<p/>
+| ![constellation](./boards/RFSoC4x2/ofdm_video/docs/img/constellation.png) |
+| :-----------------------------------------------------------------------: |
+| **Figure2** : received constellations on the RFSoC 4x2 (ILA)             |
 
-* Now open a terminal in Jupyter as illustrated below:
+　
 
-<p align="center">
-  <img src="./open_terminal_window.jpg" width="50%" height="50%" />
-<p/>
+## Video Link (this fork)
 
-* Now execute the following command in the terminal:
+* `ofdm_tx` with the PRBS source replaced by an external data port, fed from an AXI4-Stream FIFO; `ofdm_rx` unchanged, followed by a slicer and byte packer.
+* Framing made bit-exact in simulation: 5960 data symbols per OFDM frame, byte aligned for all modulations and across run-time modulation changes.
+* CRC-protected link packets over AXI DMA; lwIP UDP bridge on the PS; ffmpeg / ffplay on the PC.
 
-```sh
-pip3 install https://github.com/strath-sdr/rfsoc_ofdm/releases/download/v0.4.0/rfsoc_ofdm.tar.gz
-python -m rfsoc_ofdm install
-```
+| Modulation | End-to-end saturation | Self-test CRC errors |
+| :--------: | :-------------------: | :------------------: |
+| BPSK       | **5.98 Mb/s**         | 0 / 5 000            |
+| QPSK       | **11.83 Mb/s**        | 0 / 15 000           |
+| 16-QAM     | **23.55 Mb/s**        | 1 / 20 000           |
 
-The notebook should now be available in the `rfsoc_ofdm` folder in your Jupyter Workspace.
-It is important that you use the Chrome web browser if possible as rendering performance is important.
+| ![video](./boards/RFSoC4x2/ofdm_video/docs/img/video_rx_frame.png) |
+| :----------------------------------------------------------------: |
+| **Figure3** : a frame of a 720p H.264 stream received over QPSK    |
 
-## Using the Project Files
-The following software is required to use the project files in this repository.
-- Vivado Design Suite 2020.2
-- MATLAB R2020a
+Build, run and all results: [boards/RFSoC4x2/ofdm_video](./boards/RFSoC4x2/ofdm_video/README.md) (Vivado / Vitis 2020.2).
 
-### Vivado
-This project can be built with Vivado from the command line. Open Vivado 2020.1 and execute the following into the tcl console:
-```sh
-cd /<repository-location>/boards/<board-name>/rfsoc_ofdm/
-make block_design
-make bitstream
-```
+　
 
-Alternatively, you can run the entire project build by executing the following into the tcl console:
-```sh
-make all
-```
+## Upstream Demonstrator (PYNQ)
+
+| ![demo](./demonstration.gif)                         |
+| :--------------------------------------------------: |
+| **Figure4** : upstream PYNQ demonstrator (Strathclyde) |
+
+* Boards: ZCU208, ZCU111, RFSoC4x2, RFSoC2x2 with PYNQ v3.1.1 or later; ZCU216 with PYNQ 2.7.
+* Install on the board (internet access needed), then open the `rfsoc_ofdm` notebooks in Jupyter Lab:
+  `pip3 install https://github.com/strath-sdr/rfsoc_ofdm/releases/download/v0.4.0/rfsoc_ofdm.tar.gz` and `python -m rfsoc_ofdm install`.
+* Project files: Vivado 2020.2 and MATLAB R2020a (HDL Coder models in `boards/ip/hdl_coder`); `make` per board in `boards/<board>/rfsoc_ofdm`.
+
+　
 
 ## License
-[BSD 3-Clause](/LICENSE)
+
+BSD 3-Clause. Upstream: University of Strathclyde (license declared in `setup.py`; the repository has no LICENSE file). `boards/RFSoC4x2/ofdm_video`: Copyright (c) 2026, Yijie Yu.
+
+　
+
+　
+
+<span id="cn">RFSoC OFDM 收发机与压缩视频传输</span>
+===========================
+
+Fork 自 [strath-sdr/rfsoc_ofdm](https://github.com/strath-sdr/rfsoc_ofdm)（University of Strathclyde）：RFSoC 板卡上的 OFDM 收发机演示（类 802.11：64 点 FFT，48 个数据 + 4 个导频子载波，BPSK 到 1024-QAM），以 PYNQ overlay 运行。原设计中发射端只发 PRBS，接收端只显示星座图。
+
+本 fork 新增 **[boards/RFSoC4x2/ofdm_video](./boards/RFSoC4x2/ofdm_video/README.md)**：让同一个 PHY 传真实数据，即经 UDP 的 H.264 压缩视频，在 RFSoC 4x2 上裸机运行，**DAC_B（tile 228 ch0）→ ADC_B（tile 226 ch0）**，时钟通过 PS SPI 配置（不依赖 PYNQ）。上板实测：BPSK / QPSK / 16-QAM 端到端 **5.98 / 11.83 / 23.55 Mb/s**，EVM −35 dB，720p H.264 逐比特正确接收。
+
+　
+
+| ![arch](./boards/RFSoC4x2/ofdm_video/docs/img/arch.svg) |
+| :-----------------------------------------------------: |
+| **图1** : 视频链路数据通路                               |
+
+| ![constellation](./boards/RFSoC4x2/ofdm_video/docs/img/constellation.png) |
+| :-----------------------------------------------------------------------: |
+| **图2** : RFSoC 4x2 上的接收星座图（ILA）                                |
+
+　
+
+## 视频链路（本 fork）
+
+* `ofdm_tx` 的 PRBS 源换成外部数据口，由 AXI4-Stream FIFO 供数；`ofdm_rx` 原样使用，后接判决和字节打包。
+* 帧结构在仿真中做到逐比特对齐：每个 OFDM 帧 5960 个数据符号，各种调制及运行时切换调制后都字节对齐。
+* AXI DMA 传带 CRC 的链路包；PS 上 lwIP 做 UDP 桥接；PC 端用 ffmpeg / ffplay。
+
+| 调制 | 端到端饱和吞吐 | 自测 CRC 错误 |
+| :--: | :------------: | :-----------: |
+| BPSK | **5.98 Mb/s** | 0 / 5 000 |
+| QPSK | **11.83 Mb/s** | 0 / 15 000 |
+| 16-QAM | **23.55 Mb/s** | 1 / 20 000 |
+
+| ![video](./boards/RFSoC4x2/ofdm_video/docs/img/video_rx_frame.png) |
+| :----------------------------------------------------------------: |
+| **图3** : 经 QPSK 收到的 720p H.264 视频画面                       |
+
+编译、运行和全部结果见 [boards/RFSoC4x2/ofdm_video](./boards/RFSoC4x2/ofdm_video/README.md)（Vivado / Vitis 2020.2）。
+
+　
+
+## 原设计：PYNQ 演示
+
+| ![demo](./demonstration.gif)                |
+| :-----------------------------------------: |
+| **图4** : 原设计的 PYNQ 演示（Strathclyde） |
+
+* 板卡：ZCU208、ZCU111、RFSoC4x2、RFSoC2x2，PYNQ v3.1.1 及以上；ZCU216 用 PYNQ 2.7。
+* 板上安装（需联网）后在 Jupyter Lab 打开 `rfsoc_ofdm` notebook：
+  `pip3 install https://github.com/strath-sdr/rfsoc_ofdm/releases/download/v0.4.0/rfsoc_ofdm.tar.gz`，然后 `python -m rfsoc_ofdm install`。
+* 工程文件：Vivado 2020.2 与 MATLAB R2020a（HDL Coder 模型在 `boards/ip/hdl_coder`）；各板卡在 `boards/<board>/rfsoc_ofdm` 下 `make`。
+
+　
+
+## 许可证
+
+BSD 3-Clause。原设计版权归 University of Strathclyde（许可证声明见 `setup.py`，仓库中没有 LICENSE 文件）；`boards/RFSoC4x2/ofdm_video` 版权所有 (c) 2026 Yijie Yu。
